@@ -1,0 +1,132 @@
+{
+  "entities": {
+    "Service": {
+      "title": "Service",
+      "description": "Cyber cafe and CSC digital services offered by Digital IT Solutions",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 150 },
+        "hindiName": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "govFee": { "type": "number" },
+        "serviceFee": { "type": "number" },
+        "totalFee": { "type": "number" },
+        "processingTime": { "type": "string", "maxLength": 50 },
+        "requiredDocs": { "type": "array" },
+        "isActive": { "type": "boolean" },
+        "popular": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["name", "category", "serviceFee", "isActive"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Sarkari job notices, RTPS schemes, CSC alerts and updates",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 80 },
+        "content": { "type": "string", "maxLength": 5000 },
+        "lastDate": { "type": "string", "maxLength": 50 },
+        "eligibility": { "type": "string", "maxLength": 300 },
+        "applyFee": { "type": "string", "maxLength": 100 },
+        "officialLink": { "type": "string", "maxLength": 500 },
+        "isPinned": { "type": "boolean" },
+        "author": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["title", "category", "content", "createdAt"]
+    },
+    "Request": {
+      "title": "Request",
+      "description": "Customer service applications submitted online for processing",
+      "type": "object",
+      "properties": {
+        "trackingToken": { "type": "string", "maxLength": 50 },
+        "customerName": { "type": "string", "maxLength": 120 },
+        "mobile": { "type": "string", "maxLength": 20 },
+        "email": { "type": "string", "maxLength": 120 },
+        "serviceId": { "type": "string", "maxLength": 100 },
+        "serviceName": { "type": "string", "maxLength": 150 },
+        "serviceCategory": { "type": "string", "maxLength": 80 },
+        "address": { "type": "string", "maxLength": 300 },
+        "district": { "type": "string", "maxLength": 80 },
+        "village": { "type": "string", "maxLength": 100 },
+        "pincode": { "type": "string", "maxLength": 10 },
+        "additionalNotes": { "type": "string", "maxLength": 1000 },
+        "uploadedDocs": { "type": "array" },
+        "status": { "type": "string", "enum": ["pending", "processing", "documents_needed", "completed", "rejected"] },
+        "adminRemarks": { "type": "string", "maxLength": 1000 },
+        "paymentStatus": { "type": "string", "enum": ["unpaid", "paid_online", "paid_cash"] },
+        "amount": { "type": "number" },
+        "acknowledgementNumber": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["trackingToken", "customerName", "mobile", "serviceName", "status"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Financial ledger record for cyber cafe services and CSC transactions",
+      "type": "object",
+      "properties": {
+        "transactionNumber": { "type": "string", "maxLength": 60 },
+        "date": { "type": "string", "maxLength": 50 },
+        "customerName": { "type": "string", "maxLength": 120 },
+        "customerMobile": { "type": "string", "maxLength": 20 },
+        "serviceName": { "type": "string", "maxLength": 150 },
+        "amount": { "type": "number" },
+        "govFee": { "type": "number" },
+        "cyberCafeFee": { "type": "number" },
+        "profit": { "type": "number" },
+        "paymentMode": { "type": "string", "enum": ["UPI", "Cash", "AEPS", "Card"] },
+        "paymentStatus": { "type": "string", "enum": ["success", "pending", "failed"] },
+        "referenceId": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["transactionNumber", "customerName", "serviceName", "amount", "paymentMode", "paymentStatus"]
+    },
+    "ShopConfig": {
+      "title": "ShopConfig",
+      "description": "Shop information, business hours, emergency notices and settings",
+      "type": "object",
+      "properties": {
+        "shopName": { "type": "string", "maxLength": 150 },
+        "proprietor": { "type": "string", "maxLength": 120 },
+        "mobile": { "type": "string", "maxLength": 20 },
+        "altMobile": { "type": "string", "maxLength": 20 },
+        "email": { "type": "string", "maxLength": 120 },
+        "address": { "type": "string", "maxLength": 300 },
+        "upiId": { "type": "string", "maxLength": 100 },
+        "emergencyNotice": { "type": "string", "maxLength": 500 },
+        "openingHours": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      }
+    }
+  },
+  "firestore": {
+    "/services/{serviceId}": {
+      "schema": { "$ref": "#/entities/Service" },
+      "description": "CSC and cyber cafe services catalog"
+    },
+    "/posts/{postId}": {
+      "schema": { "$ref": "#/entities/Post" },
+      "description": "Official notices, Sarkari job updates, and RTPS announcements"
+    },
+    "/requests/{requestId}": {
+      "schema": { "$ref": "#/entities/Request" },
+      "description": "Customer online application forms and requests"
+    },
+    "/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/Transaction" },
+      "description": "Real-time transaction tracking and cyber cafe khata entries"
+    },
+    "/shopConfig/{configId}": {
+      "schema": { "$ref": "#/entities/ShopConfig" },
+      "description": "Store profile, UPI payment info, and public announcement ticker"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+    function existing() {
+      return resource.data;
+    }
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'digitalitsolutionsshop@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Services Collection
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Posts Collection (Sarkari Job / CSC / RTPS Notices)
+    match /posts/{postId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Customer Requests / Applications
+    match /requests/{requestId} {
+      // Public can submit an online request
+      allow create: if incoming().customerName is string &&
+                       incoming().customerName.size() <= 120 &&
+                       incoming().mobile is string &&
+                       incoming().mobile.size() <= 20 &&
+                       incoming().status in ['pending', 'processing', 'documents_needed', 'completed', 'rejected'];
+      // Anyone with direct link or tracking ID can get the status, or admin can list & update
+      allow get: if true;
+      allow list, update, delete: if isAdmin();
+    }
+
+    // Financial Transactions Ledger
+    match /transactions/{transactionId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() || (
+        incoming().transactionNumber is string &&
+        incoming().customerName is string &&
+        incoming().amount is number
+      );
+      allow update, delete: if isAdmin();
+    }
+
+    // Shop Configuration & Notices
+    match /shopConfig/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Admins Collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

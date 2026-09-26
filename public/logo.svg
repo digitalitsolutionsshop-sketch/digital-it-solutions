@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 150" fill="none">
+  <!-- DEFINTIONS & STYLES -->
+  <defs>
+    <style>
+      .blue-fill { fill: #0066B3; }
+      .green-fill { fill: #22A349; }
+      .blue-stroke { stroke: #0066B3; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+      .green-stroke { stroke: #22A349; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+      .text-digital { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-weight: 800; font-size: 52px; fill: #0066B3; letter-spacing: -0.5px; }
+      .text-it-solutions { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-weight: 800; font-size: 44px; fill: #26292E; letter-spacing: 0.5px; }
+      .text-tagline { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-weight: 600; font-size: 15px; fill: #33383F; letter-spacing: 3.5px; }
+    </style>
+  </defs>
+
+  <!-- SHIELD EMBLEM GROUP (140x140 space on left) -->
+  <g id="shield-emblem" transform="translate(10, 6)">
+    <!-- Blue Shield Left Outline -->
+    <path d="M 68,10 C 50,14 26,18 16,30 C 13,56 16,84 32,106 C 44,122 58,131 68,136" 
+          stroke="#0066B3" stroke-width="7" stroke-linecap="round" fill="none" />
+
+    <!-- Green Shield Right Lower Outline -->
+    <path d="M 68,136 C 76,132 88,124 98,110 C 108,96 112,82 114,70" 
+          stroke="#22A349" stroke-width="7" stroke-linecap="round" fill="none" />
+    
+    <!-- Top-Right Blue Arc connecting to arrow -->
+    <path d="M 68,10 C 82,14 96,18 108,24" 
+          stroke="#0066B3" stroke-width="7" stroke-linecap="round" fill="none" />
+
+    <!-- Blue Circuit Traces (Left inside shield) -->
+    <!-- Trace 1 (far left) -->
+    <path d="M 28,88 L 28,62" stroke="#0066B3" stroke-width="5" stroke-linecap="round" fill="none" />
+    <circle cx="28" cy="56" r="4.5" fill="#0066B3" />
+
+    <!-- Trace 2 (middle left) -->
+    <path d="M 40,98 L 40,46" stroke="#0066B3" stroke-width="5" stroke-linecap="round" fill="none" />
+    <circle cx="40" cy="40" r="4.5" fill="#0066B3" />
+
+    <!-- Trace 3 (inner left) -->
+    <path d="M 52,106 L 52,40" stroke="#0066B3" stroke-width="5" stroke-linecap="round" fill="none" />
+    <circle cx="52" cy="34" r="4.5" fill="#0066B3" />
+
+    <!-- Green Dynamic Arrow & Circuit Traces (Rising from left to top right) -->
+    <!-- Lower green circuit branch with nodes -->
+    <path d="M 46,122 L 62,98 L 78,112 L 96,86" stroke="#22A349" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <circle cx="46" cy="122" r="4.5" fill="#22A349" />
+    <circle cx="62" cy="98" r="4.5" fill="#22A349" />
+    <circle cx="78" cy="112" r="4.5" fill="#22A349" />
+
+    <!-- Main Green Arrow Trunk & Upper Circuit -->
+    <path d="M 36,92 L 56,64 L 72,78 L 102,36" stroke="#22A349" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <circle cx="36" cy="92" r="5" fill="#22A349" />
+    <circle cx="56" cy="64" r="5" fill="#22A349" />
+    <circle cx="72" cy="78" r="5" fill="#22A349" />
+
+    <!-- Big Green Arrowhead breaking through top-right -->
+    <path d="M 88,38 L 118,12 L 126,50 L 114,44 L 104,56 Z" fill="#22A349" />
+    <polygon points="98,34 116,18 120,40 112,36 104,44" fill="#FFFFFF" />
+    <line x1="90" y1="52" x2="114" y2="24" stroke="#22A349" stroke-width="4.5" stroke-linecap="round" />
+  </g>
+
+  <!-- BRAND TYPOGRAPHY (Aligned precisely with user's uploaded logo) -->
+  <g transform="translate(155, 12)">
+    <!-- Line 1: DIGITAL (Blue) -->
+    <text x="0" y="44" class="text-digital">DIGITAL</text>
+    
+    <!-- Line 2: IT SOLUTIONS (Charcoal) -->
+    <text x="0" y="90" class="text-it-solutions">IT SOLUTIONS</text>
+    
+    <!-- Line 3: EMPOWERING YOUR FUTURE (Tracked Dark Gray) -->
+    <text x="1" y="118" class="text-tagline">EMPOWERING YOUR FUTURE</text>
+  </g>
+</svg>

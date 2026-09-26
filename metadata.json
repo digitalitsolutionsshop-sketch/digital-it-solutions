@@ -1,0 +1,8 @@
+{
+  "name": "Digital IT Solutions - CSC Digital India Portal",
+  "description": "Official online Cyber Cafe & CSC Digital India portal for Digital IT Solutions (Paighamberpur, Darbhanga Bihar) by Akash Kumar Lal Das. Services, Job applications, RTPS Bihar, and transaction tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
