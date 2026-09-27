@@ -16,7 +16,8 @@ import {
   FileCheck2,
   MapPin,
   ExternalLink,
-  Languages
+  Languages,
+  Sparkles
 } from 'lucide-react';
 import type { ShopConfig } from '../types';
 
@@ -26,6 +27,7 @@ interface NavbarProps {
   onOpenApply: () => void;
   onOpenPayment: () => void;
   onOpenAdmin: () => void;
+  onOpenAIChat?: () => void;
   isAdminLoggedIn: boolean;
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -37,6 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenApply,
   onOpenPayment,
   onOpenAdmin,
+  onOpenAIChat,
   isAdminLoggedIn,
   activeTab,
   setActiveTab,
@@ -143,6 +146,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
+            onClick={() => handleNavClick('schemes')}
+            className={`px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 ${
+              activeTab === 'schemes' 
+                ? 'bg-blue-50 text-blue-800' 
+                : 'text-slate-700 hover:text-blue-700 hover:bg-slate-100'
+            }`}
+          >
+            <span>सरकारी योजनाएं</span>
+            <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800">
+              New
+            </span>
+          </button>
+
+          <button
             onClick={() => handleNavClick('posts')}
             className={`px-3 py-2 rounded-lg text-sm font-semibold transition ${
               activeTab === 'posts' 
@@ -189,6 +206,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Action Buttons */}
         <div className="hidden sm:flex items-center gap-2.5">
+          {/* AI Chatbot Assistant Button */}
+          {onOpenAIChat && (
+            <button
+              onClick={onOpenAIChat}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition shadow-xs"
+              title="Gemini AI Cyber Assistant"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+              <span>AI सहायक</span>
+            </button>
+          )}
+
           {/* Track Application Button */}
           <button
             onClick={onOpenTrack}
@@ -272,6 +301,31 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               📑 {t.navServices}
             </button>
+
+            <button
+              onClick={() => handleNavClick('schemes')}
+              className={`text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between ${
+                activeTab === 'schemes' ? 'bg-blue-50 text-blue-800' : 'text-slate-800'
+              }`}
+            >
+              <span>🏛️ सरकारी योजनाएं (Schemes)</span>
+              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800">
+                New
+              </span>
+            </button>
+
+            {onOpenAIChat && (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAIChat();
+                }}
+                className="text-left px-3 py-2.5 rounded-lg text-sm font-bold bg-blue-50 text-blue-900 border border-blue-200 flex items-center gap-2"
+              >
+                <Sparkles className="w-4 h-4 text-blue-600 animate-pulse" />
+                <span>🤖 AI साइबर सहायक (Gemini Voice)</span>
+              </button>
+            )}
 
             <button
               onClick={() => handleNavClick('posts')}

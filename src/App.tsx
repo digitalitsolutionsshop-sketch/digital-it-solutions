@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import type { Service, Post, ServiceRequest, Transaction, ShopConfig, ApplicationStatus } from './types';
+import type { Service, Post, ServiceRequest, Transaction, ShopConfig, ApplicationStatus, OnlineScheme } from './types';
 import { 
   db, 
   auth, 
@@ -14,6 +14,7 @@ import {
   INITIAL_SERVICES, 
   INITIAL_POSTS, 
   INITIAL_TRANSACTIONS,
+  INITIAL_SCHEMES,
   ADMIN_EMAIL,
   handleFirestoreError,
   OperationType
@@ -31,6 +32,8 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ServiceCatalog } from './components/ServiceCatalog';
 import { SarkariPosts } from './components/SarkariPosts';
+import { OnlineSchemesSection } from './components/OnlineSchemesSection';
+import { AIChatbotModal } from './components/AIChatbotModal';
 import { QuickLinks } from './components/QuickLinks';
 import { Testimonials } from './components/Testimonials';
 import { FAQ } from './components/FAQ';
@@ -55,7 +58,8 @@ import {
   Clock, 
   CheckCircle2, 
   ShieldCheck,
-  Building2
+  Building2,
+  Bot
 } from 'lucide-react';
 
 export default function App() {
@@ -72,6 +76,9 @@ export default function App() {
   const [posts, setPosts] = useState<Post[]>(
     INITIAL_POSTS.map((p, idx) => ({ ...p, id: `post-${idx + 1}` }))
   );
+  const [schemes, setSchemes] = useState<OnlineScheme[]>(
+    INITIAL_SCHEMES.map((sc, idx) => ({ ...sc, id: `scheme-${idx + 1}` }))
+  );
   const [transactions, setTransactions] = useState<Transaction[]>(
     INITIAL_TRANSACTIONS.map((t, idx) => ({ ...t, id: t.transactionNumber }))
   );
@@ -84,6 +91,7 @@ export default function App() {
   
   const [showTrackModal, setShowTrackModal] = useState<boolean>(false);
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
+  const [showAIChatModal, setShowAIChatModal] = useState<boolean>(false);
   const [showAdminLoginModal, setShowAdminLoginModal] = useState<boolean>(false);
   const [showAdminDashboardModal, setShowAdminDashboardModal] = useState<boolean>(false);
   
@@ -152,6 +160,16 @@ export default function App() {
       console.warn("Firestore requests snapshot fallback:", err.message);
     });
 
+    // Schemes listener
+    const unsubSchemes = onSnapshot(collection(db, 'schemes'), (snap) => {
+      if (!snap.empty) {
+        const loaded: OnlineScheme[] = snap.docs.map(d => ({ ...(d.data() as OnlineScheme), id: d.id }));
+        setSchemes(loaded);
+      }
+    }, (err) => {
+      console.warn("Firestore schemes snapshot fallback:", err.message);
+    });
+
     // Transactions listener
     const unsubTxns = onSnapshot(collection(db, 'transactions'), (snap) => {
       if (!snap.empty) {
@@ -167,6 +185,7 @@ export default function App() {
       unsubPosts();
       unsubConfig();
       unsubRequests();
+      unsubSchemes();
       unsubTxns();
     };
   }, []);
@@ -180,6 +199,19 @@ export default function App() {
   const handleApplyForPost = (post: Post) => {
     const matchedService = services.find(s => s.name.toLowerCase().includes('job') || s.category === 'Sarkari Jobs & Results');
     setPreselectedService(matchedService || null);
+    setShowApplyModal(true);
+  };
+
+  const handleApplyViaScheme = (scheme: OnlineScheme) => {
+    const matchedService = services.find(s => s.name.toLowerCase().includes('job') || s.category === 'Sarkari Jobs & Results') || services[0];
+    setPreselectedService({
+      ...matchedService,
+      name: scheme.title,
+      hindiName: scheme.title,
+      category: 'Sarkari Jobs & Results',
+      requiredDocs: scheme.requiredDocs || matchedService.requiredDocs,
+      totalFee: 80
+    });
     setShowApplyModal(true);
   };
 
@@ -224,6 +256,7 @@ export default function App() {
             setShowAdminLoginModal(true);
           }
         }}
+        onOpenAIChat={() => setShowAIChatModal(true)}
         isAdminLoggedIn={isAdminLoggedIn}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -258,6 +291,15 @@ export default function App() {
               />
             </div>
 
+            {/* Online Verified Schemes & Services Section (Requirements #19-26) */}
+            <div id="schemes-section">
+              <OnlineSchemesSection
+                schemes={schemes}
+                onApplyViaCafe={handleApplyViaScheme}
+                shopMobile={config.mobile}
+              />
+            </div>
+
             {/* Services Catalog */}
             <div id="services-section">
               <ServiceCatalog
@@ -287,6 +329,17 @@ export default function App() {
               <QuickLinks />
             </div>
           </>
+        )}
+
+        {/* Dedicated Schemes & Official Services View */}
+        {activeTab === 'schemes' && (
+          <div className="py-2">
+            <OnlineSchemesSection
+              schemes={schemes}
+              onApplyViaCafe={handleApplyViaScheme}
+              shopMobile={config.mobile}
+            />
+          </div>
         )}
 
         {activeTab === 'faq' && (
@@ -335,6 +388,23 @@ export default function App() {
         )}
       </main>
 
+      {/* Floating Gemini AI Chatbot Trigger Button (Desktop & Mobile) */}
+      <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40">
+        <button
+          onClick={() => setShowAIChatModal(true)}
+          className="group flex items-center gap-2 p-3 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-900 hover:from-blue-800 hover:to-indigo-950 text-white font-bold text-xs sm:text-sm shadow-xl shadow-blue-900/30 border border-blue-400/40 hover:scale-105 active:scale-95 transition"
+          title="Gemini AI Cyber Assistant with Voice"
+        >
+          <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+          </div>
+          <span className="hidden sm:inline">AI साइबर सहायक</span>
+          <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-amber-400 text-slate-950 font-black">
+            VOICE
+          </span>
+        </button>
+      </div>
+
       {/* Floating Quick Action Sticky Bar for Mobile Users */}
       <aside aria-label="Quick mobile actions" className="sm:hidden fixed bottom-3 inset-x-3 z-40 bg-slate-950/95 backdrop-blur-md text-white p-2 rounded-2xl border border-slate-800 shadow-2xl flex items-center justify-between gap-1">
         <a
@@ -358,6 +428,14 @@ export default function App() {
           <MessageSquare className="w-3.5 h-3.5 fill-white text-emerald-900" />
           <span>{t.mobileWhatsapp}</span>
         </a>
+
+        <button
+          onClick={() => setShowAIChatModal(true)}
+          className="flex-1 py-2 px-1 text-center rounded-xl bg-blue-900/90 text-blue-200 hover:bg-blue-800 text-[11px] font-bold flex flex-col items-center gap-0.5 border border-blue-700/50"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <span>AI सहायक</span>
+        </button>
 
         <button
           onClick={() => {
@@ -408,6 +486,22 @@ export default function App() {
           setShowApplyModal(false);
           setActiveReceiptRequest(req);
           setShowReceiptModal(true);
+        }}
+      />
+
+      {/* Gemini AI & Voice Chatbot Modal (Requirements #15-18) */}
+      <AIChatbotModal
+        isOpen={showAIChatModal}
+        onClose={() => setShowAIChatModal(false)}
+        shopMobile={config.mobile}
+        onOpenApply={() => {
+          setShowAIChatModal(false);
+          setPreselectedService(null);
+          setShowApplyModal(true);
+        }}
+        onOpenTrack={() => {
+          setShowAIChatModal(false);
+          setShowTrackModal(true);
         }}
       />
 
@@ -463,8 +557,11 @@ export default function App() {
         transactions={transactions}
         onUpdateTransactions={setTransactions}
         onViewReceipt={handleViewReceipt}
+        schemes={schemes}
+        onUpdateSchemes={setSchemes}
       />
 
     </div>
   );
 }
+

@@ -40,12 +40,11 @@ service cloud.firestore {
     // Customer Requests / Applications
     match /requests/{requestId} {
       // Public can submit an online request
-      allow create: if incoming().customerName is string &&
-                       incoming().customerName.size() <= 120 &&
+      allow create: if (incoming().applicantName is string || incoming().customerName is string) &&
                        incoming().mobile is string &&
                        incoming().mobile.size() <= 20 &&
                        incoming().status in ['pending', 'processing', 'documents_needed', 'completed', 'rejected'];
-      // Anyone with direct link or tracking ID can get the status, or admin can list & update
+      // Anyone with direct link or tracking ID can get the status, or admin can list, update & delete
       allow get: if true;
       allow list, update, delete: if isAdmin();
     }
@@ -61,8 +60,20 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
-    // Shop Configuration & Notices
+    // Shop Configuration & Public Notices
     match /shopConfig/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Online Government Schemes & Verified Services (Requirements #19-26)
+    match /schemes/{schemeId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // AI & Voice Chatbot Settings (Requirements #16, #18, #23)
+    match /aiSettings/{settingId} {
       allow read: if true;
       allow write: if isAdmin();
     }

@@ -18,7 +18,7 @@ import {
   type Unsubscribe
 } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
-import type { Service, Post, ServiceRequest, Transaction, ShopConfig } from '../types';
+import type { Service, Post, ServiceRequest, Transaction, ShopConfig, OnlineScheme } from '../types';
 
 // Initialize Firebase App
 const app = initializeApp(firebaseConfig);
@@ -472,6 +472,95 @@ export const INITIAL_TRANSACTIONS: Omit<Transaction, 'id'>[] = [
   }
 ];
 
+// Initial realistic verified official schemes for Bihar & India
+export const INITIAL_SCHEMES: Omit<OnlineScheme, 'id'>[] = [
+  {
+    title: "बिहार RTPS ऑनलाइन सेवा - जाति, आय एवं निवास प्रमाण पत्र 2026",
+    description: "बिहार सरकार सामान्य प्रशासन विभाग द्वारा आरटीपीएस सेवा प्लस पोर्टल पर सभी अंचलों में ऑनलाइन प्रमाण पत्र निर्गत किए जा रहे हैं।",
+    category: "Bihar Government Services",
+    department: "General Administration Department, Bihar",
+    state: "Bihar",
+    startDate: "2026-01-01",
+    lastDate: "2026-12-31",
+    eligibility: "बिहार राज्य के सभी स्थायी नागरिक",
+    requiredDocs: ["आधार कार्ड", "पासपोर्ट साइज रंगीन फोटो", "स्वयं का घोषणा पत्र", "सक्रिय मोबाइल नंबर"],
+    officialUrl: "https://serviceonline.bihar.gov.in",
+    sourceName: "RTPS Bihar ServicePlus Portal",
+    sourceUrl: "https://serviceonline.bihar.gov.in",
+    detectedDate: "2026-09-20",
+    status: "published",
+    createdAt: "2026-09-20T10:00:00.000Z"
+  },
+  {
+    title: "बिहार पोस्ट मैट्रिक छात्रवृत्ति (PMS) 2026-27 (SC, ST, BC, EBC छात्र)",
+    description: "मैट्रिक (10वीं) उत्तीर्ण विद्यार्थियों के लिए 11वीं, 12वीं, ग्रेजुएशन, आईटीआई, डिप्लोमा एवं अन्य उच्च शिक्षा हेतु छात्रवृत्ति।",
+    category: "Student & Education",
+    department: "Education Department, Bihar",
+    state: "Bihar",
+    startDate: "2026-09-01",
+    lastDate: "2026-11-30",
+    eligibility: "बिहार के मान्यता प्राप्त संस्थानों में नामांकित SC/ST/BC/EBC छात्र जिनकी पारिवारिक वार्षिक आय ₹3 लाख से कम हो",
+    requiredDocs: ["10वीं मार्कशीट", "कॉलेज बोनाफाइड सर्टिफिकेट", "कॉलेज फीस रसीद", "जाति प्रमाण पत्र", "आय प्रमाण पत्र", "निवास प्रमाण पत्र", "आधार कार्ड", "बैंक पासबुक"],
+    officialUrl: "http://pmsonline.bih.nic.in",
+    sourceName: "Bihar PMS Official Portal",
+    sourceUrl: "http://pmsonline.bih.nic.in",
+    detectedDate: "2026-09-22",
+    status: "published",
+    createdAt: "2026-09-22T08:30:00.000Z"
+  },
+  {
+    title: "प्रधानमंत्री किसान सम्मान निधि योजना (19वीं किस्त ई-केवाईसी)",
+    description: "पात्र किसान परिवारों को प्रतिवर्ष ₹6,000 की आर्थिक सहायता तीन समान किस्तों में सीधे बैंक खाते में। अगली किस्त हेतु ई-केवाईसी अनिवार्य।",
+    category: "Agriculture & Farmer Schemes",
+    department: "Ministry of Agriculture & Farmers Welfare",
+    state: "Central / All India",
+    startDate: "2026-01-01",
+    lastDate: "2026-10-31",
+    eligibility: "खेती योग्य भूमि रखने वाले सभी पंजीकृत किसान परिवार",
+    requiredDocs: ["आधार कार्ड", "जमीन की अद्यतन रसीद / एलपीसी", "बैंक पासबुक", "आधार लिंक मोबाइल नंबर"],
+    officialUrl: "https://pmkisan.gov.in",
+    sourceName: "PM Kisan Official Portal",
+    sourceUrl: "https://pmkisan.gov.in",
+    detectedDate: "2026-09-24",
+    status: "published",
+    createdAt: "2026-09-24T12:00:00.000Z"
+  },
+  {
+    title: "बिहार पुलिस सिपाही भर्ती परीक्षा 2026 (CSBC)",
+    description: "केंद्रीय चयन पर्षद (सिपाही भर्ती) द्वारा सिपाही पदों हेतु ऑनलाइन आवेदन एवं परीक्षा प्रवेश पत्र जारी।",
+    category: "Employment & Jobs",
+    department: "Central Selection Board of Constable, Bihar",
+    state: "Bihar",
+    startDate: "2026-09-10",
+    lastDate: "2026-10-15",
+    eligibility: "12वीं (इंटरमीडिएट) उत्तीर्ण, आयु 18 से 25 वर्ष",
+    requiredDocs: ["10वीं एवं 12वीं मार्कशीट", "जाति व निवास प्रमाण पत्र", "फोटो एवं हस्ताक्षर", "पहचान पत्र (आधार कार्ड)"],
+    officialUrl: "https://csbc.bih.nic.in",
+    sourceName: "CSBC Bihar Portal",
+    sourceUrl: "https://csbc.bih.nic.in",
+    detectedDate: "2026-09-25",
+    status: "published",
+    createdAt: "2026-09-25T09:15:00.000Z"
+  },
+  {
+    title: "बिहार डीजल अनुदान एवं कृषि यांत्रिकरण योजना 2026",
+    description: "फसलों की सिंचाई हेतु किसानों को प्रति एकड़ ₹750 प्रति सिंचाई डीजल अनुदान एवं 50% से 80% तक कृषि यंत्रों पर सरकारी सब्सिडी।",
+    category: "Agriculture & Farmer Schemes",
+    department: "Department of Agriculture, Bihar",
+    state: "Bihar",
+    startDate: "2026-08-15",
+    lastDate: "2026-10-30",
+    eligibility: "डीबीटी एग्रीकल्चर पोर्टल पर 13 अंकों के किसान पंजीकरण वाले किसान",
+    requiredDocs: ["किसान पंजीकरण संख्या", "डीजल क्रय डिजिटल रसीद", "जमीन रसीद / स्व-घोषणा पत्र"],
+    officialUrl: "https://dbtagriculture.bihar.gov.in",
+    sourceName: "DBT Agriculture Bihar",
+    sourceUrl: "https://dbtagriculture.bihar.gov.in",
+    detectedDate: "2026-09-26",
+    status: "published",
+    createdAt: "2026-09-26T07:00:00.000Z"
+  }
+];
+
 // Helper to seed or get Firestore collections safely
 export async function seedInitialDataIfNeeded() {
   try {
@@ -499,6 +588,14 @@ export async function seedInitialDataIfNeeded() {
       }
     }
 
+    const schemesSnap = await getDocs(collection(db, 'schemes'));
+    if (schemesSnap.empty) {
+      console.log('Seeding initial verified government schemes...');
+      for (const sc of INITIAL_SCHEMES) {
+        await addDoc(collection(db, 'schemes'), sc);
+      }
+    }
+
     const configDoc = await getDoc(doc(db, 'shopConfig', 'main'));
     if (!configDoc.exists()) {
       await setDoc(doc(db, 'shopConfig', 'main'), DEFAULT_SHOP_CONFIG);
@@ -507,3 +604,4 @@ export async function seedInitialDataIfNeeded() {
     console.warn("Notice: Firestore seeding skipped or restricted by rules:", error);
   }
 }
+

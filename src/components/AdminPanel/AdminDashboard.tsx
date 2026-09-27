@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { Service, Post, ServiceRequest, Transaction, ShopConfig, ApplicationStatus, PaymentMode } from '../../types';
+import type { Service, Post, ServiceRequest, Transaction, ShopConfig, ApplicationStatus, PaymentMode, OnlineScheme } from '../../types';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -27,10 +27,15 @@ import {
   Filter,
   Layers,
   Save,
-  Check
+  Check,
+  HardDrive,
+  Award
 } from 'lucide-react';
 import { db } from '../../lib/firebase';
 import { Logo } from '../Logo';
+import { AdminDocumentsTab } from './AdminDocumentsTab';
+import { AdminSchemesTab } from './AdminSchemesTab';
+import { AdminR2ChecklistModal } from './AdminR2ChecklistModal';
 import { 
   collection, 
   doc, 
@@ -56,6 +61,8 @@ interface AdminDashboardProps {
   transactions: Transaction[];
   onUpdateTransactions: (transactions: Transaction[]) => void;
   onViewReceipt: (req: ServiceRequest) => void;
+  schemes?: OnlineScheme[];
+  onUpdateSchemes?: (schemes: OnlineScheme[]) => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -74,8 +81,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   transactions,
   onUpdateTransactions,
   onViewReceipt,
+  schemes = [],
+  onUpdateSchemes = () => {},
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'requests' | 'transactions' | 'posts' | 'services' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'requests' | 'transactions' | 'documents' | 'schemes' | 'posts' | 'services' | 'settings'>('overview');
+  const [showR2Modal, setShowR2Modal] = useState<boolean>(false);
 
   // Filter and search states
   const [requestSearch, setRequestSearch] = useState('');
@@ -154,6 +164,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const pendingRequestsCount = requests.filter(r => r.status === 'pending').length;
   const processingRequestsCount = requests.filter(r => r.status === 'processing').length;
   const completedRequestsCount = requests.filter(r => r.status === 'completed').length;
+  const totalDocsCount = requests.reduce((acc, r) => acc + (r.uploadedDocs?.length || 0), 0);
 
   // Add Transaction Handler
   const handleCreateTransaction = async (e: React.FormEvent) => {
@@ -404,6 +415,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           <div className="flex items-center gap-2">
             <button
+              onClick={() => setShowR2Modal(true)}
+              className="px-3 py-1.5 rounded-xl bg-orange-600/30 hover:bg-orange-600/50 border border-orange-400/40 text-orange-200 text-xs font-bold flex items-center gap-1.5 transition"
+              title="Cloudflare R2 Setup Checklist"
+            >
+              <HardDrive className="w-3.5 h-3.5 text-orange-400" />
+              <span className="hidden md:inline">R2 स्टोरेज चेकलिस्ट</span>
+            </button>
+
+            <button
               onClick={onLogout}
               className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition"
               title="Logout"
@@ -450,6 +470,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {pendingRequestsCount}
               </span>
             )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('documents')}
+            className={`flex items-center gap-2 py-3 px-3.5 border-b-2 font-bold text-xs whitespace-nowrap transition ${
+              activeTab === 'documents'
+                ? 'border-blue-900 text-blue-900 bg-blue-50/50'
+                : 'border-transparent text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <HardDrive className="w-4 h-4 text-blue-600" />
+            <span>R2 दस्तावेज ({totalDocsCount})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('schemes')}
+            className={`flex items-center gap-2 py-3 px-3.5 border-b-2 font-bold text-xs whitespace-nowrap transition ${
+              activeTab === 'schemes'
+                ? 'border-blue-900 text-blue-900 bg-blue-50/50'
+                : 'border-transparent text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Award className="w-4 h-4 text-emerald-600" />
+            <span>सरकारी योजनाएं ({schemes.length})</span>
           </button>
 
           <button
@@ -805,6 +849,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
             </div>
+          )}
+
+          {/* ===================== TAB: CLOUDFLARE R2 PRIVATE DOCUMENTS ===================== */}
+          {activeTab === 'documents' && (
+            <AdminDocumentsTab
+              requests={requests}
+              onUpdateRequests={onUpdateRequests}
+            />
+          )}
+
+          {/* ===================== TAB: ONLINE SCHEMES & SERVICES APPROVAL ===================== */}
+          {activeTab === 'schemes' && (
+            <AdminSchemesTab
+              schemes={schemes}
+              onUpdateSchemes={onUpdateSchemes}
+            />
           )}
 
           {/* ===================== TAB 3: REAL-TIME TRANSACTIONS & KHATA ===================== */}
@@ -1685,6 +1745,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
       )}
 
+      {/* Cloudflare R2 Checklist Modal */}
+      <AdminR2ChecklistModal
+        isOpen={showR2Modal}
+        onClose={() => setShowR2Modal(false)}
+      />
+
     </div>
   );
 };
+
+

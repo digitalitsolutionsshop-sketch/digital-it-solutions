@@ -45,13 +45,18 @@
       "type": "object",
       "properties": {
         "trackingToken": { "type": "string", "maxLength": 50 },
+        "applicantName": { "type": "string", "maxLength": 120 },
+        "fatherName": { "type": "string", "maxLength": 120 },
+        "motherName": { "type": "string", "maxLength": 120 },
+        "husbandName": { "type": "string", "maxLength": 120 },
         "customerName": { "type": "string", "maxLength": 120 },
         "mobile": { "type": "string", "maxLength": 20 },
         "email": { "type": "string", "maxLength": 120 },
         "serviceId": { "type": "string", "maxLength": 100 },
         "serviceName": { "type": "string", "maxLength": 150 },
         "serviceCategory": { "type": "string", "maxLength": 80 },
-        "address": { "type": "string", "maxLength": 300 },
+        "address": { "type": "string", "maxLength": 500 },
+        "addressDetails": { "type": "object" },
         "district": { "type": "string", "maxLength": 80 },
         "village": { "type": "string", "maxLength": 100 },
         "pincode": { "type": "string", "maxLength": 10 },
@@ -65,7 +70,7 @@
         "createdAt": { "type": "string", "maxLength": 50 },
         "updatedAt": { "type": "string", "maxLength": 50 }
       },
-      "required": ["trackingToken", "customerName", "mobile", "serviceName", "status"]
+      "required": ["trackingToken", "mobile", "serviceName", "status"]
     },
     "Transaction": {
       "title": "Transaction",
@@ -105,6 +110,27 @@
         "openingHours": { "type": "string", "maxLength": 100 },
         "updatedAt": { "type": "string", "maxLength": 50 }
       }
+    },
+    "OnlineScheme": {
+      "title": "OnlineScheme",
+      "description": "Official government schemes, surveys and public admissions",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 250 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "category": { "type": "string", "maxLength": 80 },
+        "department": { "type": "string", "maxLength": 150 },
+        "state": { "type": "string", "maxLength": 50 },
+        "startDate": { "type": "string", "maxLength": 50 },
+        "lastDate": { "type": "string", "maxLength": 50 },
+        "eligibility": { "type": "string", "maxLength": 500 },
+        "requiredDocs": { "type": "array" },
+        "officialUrl": { "type": "string", "maxLength": 500 },
+        "sourceName": { "type": "string", "maxLength": 150 },
+        "sourceUrl": { "type": "string", "maxLength": 500 },
+        "status": { "type": "string", "enum": ["draft", "pending", "published", "rejected", "expired"] }
+      },
+      "required": ["title", "category", "officialUrl", "status"]
     }
   },
   "firestore": {
@@ -127,6 +153,10 @@
     "/shopConfig/{configId}": {
       "schema": { "$ref": "#/entities/ShopConfig" },
       "description": "Store profile, UPI payment info, and public announcement ticker"
+    },
+    "/schemes/{schemeId}": {
+      "schema": { "$ref": "#/entities/OnlineScheme" },
+      "description": "Online government schemes, scholarships, and farmer welfare programs"
     }
   }
 }
